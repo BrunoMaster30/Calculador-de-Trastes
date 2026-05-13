@@ -1,8 +1,24 @@
 {
   "name": "calctrast",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Calculador de Posições de Trastes - Ferramenta de Engenharia para Instrumentos de Corda",
+  "author": "Grupo de Engenharia de Software",
+  "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/Calculador-de-Trastes"
+  },
+  "keywords": [
+    "violao",
+    "trastes",
+    "lutheria",
+    "escala-temperada",
+    "calculadora",
+    "react",
+    "clojure"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -28,3 +44,4 @@
     "vite": "^8.0.10"
   }
 }
+

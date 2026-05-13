@@ -1,0 +1,16 @@
+version: 2
+updates:
+  # Verificar atualizações de npm
+  - package-ecosystem: "npm"
+    directory: "/calctrast"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    pull-request-branch-name:
+      separator: "/"
+
+  # Verificar atualizações de GitHub Actions (quando implementadas)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

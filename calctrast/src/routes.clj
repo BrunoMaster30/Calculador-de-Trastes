@@ -3,6 +3,7 @@
     [reitit.ring :as ring]
     [reitit.ring.middleware.parameters :as parameters]
     [muuntaja.middleware :as middleware]
+    [ring.middleware.cors :refer [wrap-cors]]
     [service :as s]))
 
 (defn handler-post [req]
@@ -21,16 +22,19 @@
        :body {:error "Passe scale e frets na URL"}})))
 
 (def app
-  (ring/ring-handler
-    (ring/router
-      [["/"
-        {:get (fn [_]
-                {:status 200
-                 :body "API rodando"})}]
+  (-> (ring/ring-handler
+        (ring/router
+          [["/"
+            {:get (fn [_]
+                    {:status 200
+                     :body "API rodando"})}]
 
-       ["/calculate"
-        {:get handler-get
-         :post handler-post}]]
+           ["/calculate"
+            {:get handler-get
+             :post handler-post}]]
 
-      {:data {:middleware [parameters/parameters-middleware
-                           middleware/wrap-format]}})))
+          {:data {:middleware [parameters/parameters-middleware
+                               middleware/wrap-format]}}))
+      (wrap-cors :access-control-allow-origin [#".*"]
+                 :access-control-allow-methods [:get :put :post :delete :options]
+                 :access-control-allow-headers ["Content-Type"])))

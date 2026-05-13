@@ -1,0 +1,89 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: calctrast/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd calctrast
+        npm ci
+
+    - name: Run ESLint
+      run: |
+        cd calctrast
+        npm run lint
+
+    - name: Build frontend
+      run: |
+        cd calctrast
+        npm run build
+
+    - name: Archive build artifacts
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: calctrast/dist
+
+  backend-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Install Clojure tools
+      uses: DeLaGuardo/setup-clojure@12.0
+      with:
+        cli: latest
+        bb: latest
+
+    - name: Build backend
+      run: |
+        cd calctrast
+        clj -M -m core --help 2>/dev/null || true
+
+    # Descomentar quando testes estiverem implementados
+    # - name: Run tests
+    #   run: |
+    #     cd calctrast
+    #     clj -M:test
+
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      if: ${{ secrets.SONAR_TOKEN != '' }}
