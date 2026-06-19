@@ -41,7 +41,7 @@ jobs:
 
     - name: Archive build artifacts
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v7
       with:
         name: dist
         path: calctrast/dist
